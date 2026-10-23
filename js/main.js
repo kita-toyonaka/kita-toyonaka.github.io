@@ -46,6 +46,8 @@
 
   mountInstagram();
   mountSlideshow();
+  mountReveal();
+  mountMonths();
 })();
 
 function mountSlideshow() {
@@ -146,6 +148,108 @@ function startSlideshow(root) {
   show(index);
   root.classList.add("is-ready");
   start();
+}
+
+function revealVisible(root) {
+  var scope = root || document;
+  Array.prototype.forEach.call(scope.querySelectorAll(".rise:not(.is-in)"), function (el) {
+    var rect = el.getBoundingClientRect();
+    var view = window.innerHeight || document.documentElement.clientHeight;
+    if (rect.height > 0 && rect.bottom > 0 && rect.top < view * 0.92) {
+      el.classList.add("is-in");
+    }
+  });
+}
+
+function mountMonths() {
+  var nav = document.querySelector("[data-month-nav]");
+  if (!nav) return;
+  var buttons = Array.prototype.slice.call(nav.querySelectorAll("[data-month]"));
+  var panels = Array.prototype.slice.call(document.querySelectorAll("[data-month-panel]"));
+  if (!buttons.length || !panels.length) return;
+
+  function show(id) {
+    var panel = null;
+    buttons.forEach(function (btn) {
+      var on = btn.getAttribute("data-month") === id;
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    panels.forEach(function (item) {
+      var on = item.getAttribute("data-month-panel") === id;
+      item.hidden = !on;
+      if (on) panel = item;
+    });
+    if (panel) {
+      window.requestAnimationFrame(function () { revealVisible(panel); });
+    }
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var id = btn.getAttribute("data-month");
+      show(id);
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", "#" + id);
+      }
+    });
+  });
+
+  var hash = (location.hash || "").replace("#", "");
+  var known = buttons.some(function (btn) { return btn.getAttribute("data-month") === hash; });
+  var initial = known ? hash : buttons[0].getAttribute("data-month");
+  if (!known) {
+    var now = new Date();
+    var month = now.getMonth() + 1;
+    var key = String(now.getFullYear()) + (month < 10 ? "0" : "") + month;
+    if (buttons.some(function (btn) { return btn.getAttribute("data-month") === key; })) initial = key;
+  }
+  show(initial);
+}
+
+function mountReveal() {
+  if (!("IntersectionObserver" in window)) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var selector = [
+    "main h1", "main h2", "main h3",
+    "main p", "main li", "main time",
+    "main figcaption", "main label",
+    "main .badge", "main .big", "main .score-meta",
+    "main .section-head > a",
+    "main blockquote > footer",
+    "main .motto", "main table",
+    ".site-footer .footer-nav",
+    ".site-footer .copyright"
+  ].join(", ");
+
+  var nodes = Array.prototype.slice.call(document.querySelectorAll(selector)).filter(function (el) {
+    if (el.closest("[data-slideshow], .nav, .skip")) return false;
+    if (el.closest(".motto") && !el.classList.contains("motto")) return false;
+    return true;
+  });
+  nodes = nodes.filter(function (el) {
+    return !nodes.some(function (other) {
+      return other !== el && other.contains(el);
+    });
+  });
+  if (!nodes.length) return;
+
+  nodes.forEach(function (el) { el.classList.add("rise"); });
+  document.documentElement.classList.add("reveal-ready");
+
+  var observer = new IntersectionObserver(function (entries) {
+    var visible = entries.filter(function (entry) { return entry.isIntersecting; });
+    visible.sort(function (a, b) {
+      return a.boundingClientRect.top - b.boundingClientRect.top;
+    });
+    visible.forEach(function (entry, index) {
+      entry.target.style.transitionDelay = Math.min(index, 7) * 65 + "ms";
+      entry.target.classList.add("is-in");
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.18 });
+
+  nodes.forEach(function (el) { observer.observe(el); });
 }
 
 function mountInstagram() {

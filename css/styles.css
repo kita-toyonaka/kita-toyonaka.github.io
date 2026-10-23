@@ -472,6 +472,30 @@ th:first-child, td:first-child { text-align: left; }
   border-radius: 14px;
   padding: 12px 14px;
 }
+.month-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+.month-nav button {
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--forest);
+  border-radius: 999px;
+  padding: 8px 18px;
+  cursor: pointer;
+}
+.month-nav button[aria-selected="true"] {
+  background: var(--forest);
+  color: var(--gold);
+  border-color: var(--forest);
+}
+.month-nav button:hover { color: var(--clay); }
+.month-nav button[aria-selected="true"]:hover { color: var(--gold); }
 .day.is-past { opacity: 0.48; }
 .day.is-today { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.28); }
 .when { font-variant-numeric: tabular-nums; font-weight: 700; }
@@ -768,8 +792,26 @@ footer.site-footer {
   .home-schedule.show-past .is-past { display: grid; }
 }
 
+html.reveal-ready .rise {
+  opacity: 0;
+  transform: translateY(1.15rem);
+  transition: opacity 0.8s ease, transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+html.reveal-ready .rise.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+html.reveal-ready .day.is-past.rise.is-in {
+  opacity: 0.48;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .slideshow .slide { transition: none; }
   .slideshow .slide.is-active img { animation: none; transform: none; }
+  html.reveal-ready .rise {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
