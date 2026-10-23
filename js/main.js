@@ -217,13 +217,11 @@ function mountReveal() {
     "main .badge", "main .big", "main .score-meta",
     "main .section-head > a",
     "main blockquote > footer",
-    "main .motto", "main table",
-    ".site-footer .footer-nav",
-    ".site-footer .copyright"
+    "main .motto", "main table"
   ].join(", ");
 
   var nodes = Array.prototype.slice.call(document.querySelectorAll(selector)).filter(function (el) {
-    if (el.closest("[data-slideshow], .nav, .skip")) return false;
+    if (el.closest("[data-slideshow], .nav, .skip, .site-footer")) return false;
     if (el.closest(".motto") && !el.classList.contains("motto")) return false;
     return true;
   });

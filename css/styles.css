@@ -809,6 +809,12 @@ html.reveal-ready .rise.is-in {
 html.reveal-ready .day.is-past.rise.is-in {
   opacity: 0.48;
 }
+html.reveal-ready .site-footer .rise,
+html.reveal-ready .site-footer .rise.is-in {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
