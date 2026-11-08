@@ -10,6 +10,8 @@
 
   var days = Array.prototype.slice.call(document.querySelectorAll("[data-date]"));
   if (days.length) {
+    document.querySelectorAll("ul.schedule").forEach(sortScheduleByTime);
+    days = Array.prototype.slice.call(document.querySelectorAll("[data-date]"));
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     days.forEach(function (el) {
@@ -148,6 +150,24 @@ function startSlideshow(root) {
   show(index);
   root.classList.add("is-ready");
   start();
+}
+
+function scheduleStartMinutes(el) {
+  var text = el.textContent || "";
+  var match = text.match(/(\d{1,2}):(\d{2})/);
+  if (!match) return 24 * 60;
+  return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+}
+
+function sortScheduleByTime(list) {
+  var items = Array.prototype.slice.call(list.querySelectorAll(".day[data-date]"));
+  if (items.length < 2) return;
+  items.sort(function (a, b) {
+    var dateCmp = (a.getAttribute("data-date") || "").localeCompare(b.getAttribute("data-date") || "");
+    if (dateCmp) return dateCmp;
+    return scheduleStartMinutes(a) - scheduleStartMinutes(b);
+  });
+  items.forEach(function (item) { list.appendChild(item); });
 }
 
 function revealVisible(root) {

@@ -1,6 +1,6 @@
 # 北豊中友好会 ホームページ
 
-豊中市の中学軟式野球チーム「北豊中友好会」のサイトです。
+豊中市の中学軟式野球チーム「北豊中友好会」の静的サイトです。GitHub Pages で公開できます。
 
 ## 公開手順
 
@@ -42,7 +42,7 @@
 
 ## Instagram
 
-ホームの「活動のいま」は、公式アカウント [instagram.com/kitatoyonaka55](https://www.instagram.com/kitatoyonaka30/) へつながります。新しい投稿は Instagram 側に上がると、そのプロフィールで最新の並びになります。
+ホームの「活動のいま」は、公式アカウント [instagram.com/kitatoyonaka55](https://www.instagram.com/kitatoyonaka55/) へつながります。新しい投稿は Instagram 側に上がると、そのプロフィールで最新の並びになります。
 
 写真がホームページ内に並ぶグリッドにしたい場合は、LightWidget や SnapWidget でウィジェットを作り、発行された iframe の URL を `js/main.js` の `widgetSrc` に貼ってください。空のままなら、プロフィールを開くボタンを表示します。
 
